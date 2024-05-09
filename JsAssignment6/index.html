@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopwatch</title>
+</head>
+<body>
+
+<div>
+    <span id="timer">00:00:00</span>
+    <button id="startBtn">Start</button>
+    <button id="pauseBtn" disabled>Pause</button>
+    <button id="stopBtn" disabled>Stop</button>
+</div>
+
+<script>
+function setupStopwatch() {
+    let startTime;
+    let elapsedTime = 0;
+    let timerInterval;
+
+    const timerDisplay = document.getElementById('timer');
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const stopBtn = document.getElementById('stopBtn');
+
+    function formatTime(ms) {
+        const hours = Math.floor(ms / 3600000);
+        const minutes = Math.floor((ms % 3600000) / 60000);
+        const seconds = Math.floor((ms % 60000) / 1000);
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function updateTimer() {
+        const currentTime = new Date().getTime();
+        const elapsedTimeMs = currentTime - startTime + elapsedTime;
+        timerDisplay.textContent = formatTime(elapsedTimeMs);
+    }
+
+    startBtn.addEventListener('click', () => {
+        startBtn.disabled = true;
+        pauseBtn.disabled = false;
+        stopBtn.disabled = false;
+        startTime = new Date().getTime() - elapsedTime;
+        timerInterval = setInterval(updateTimer, 1000);
+        updateTimer();
+    });
+
+    pauseBtn.addEventListener('click', () => {
+        if (pauseBtn.textContent === 'Pause') {
+            clearInterval(timerInterval);
+            elapsedTime = new Date().getTime() - startTime;
+            pauseBtn.textContent = 'Continue';
+        } else {
+            startTime = new Date().getTime() - elapsedTime;
+            timerInterval = setInterval(updateTimer, 1000);
+            pauseBtn.textContent = 'Pause';
+        }
+    });
+
+    stopBtn.addEventListener('click', () => {
+        clearInterval(timerInterval);
+        elapsedTime = 0;
+        timerDisplay.textContent = '00:00:00';
+        startBtn.disabled = false;
+        pauseBtn.disabled = true;
+        pauseBtn.textContent = 'Pause';
+        stopBtn.disabled = true;
+    });
+}
+
+
+setupStopwatch();
+</script>
+
+</body>
+</html>
