@@ -1,78 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stopwatch</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
 </head>
+
 <body>
 
-<div>
-    <span id="timer">00:00:00</span>
-    <button id="startBtn">Start</button>
-    <button id="pauseBtn" disabled>Pause</button>
-    <button id="stopBtn" disabled>Stop</button>
-</div>
+    <div>
+        <span id="timer">00:00:00</span>
+        <button id="startBtn">Start</button>
+        <button id="pauseBtn" disabled>Pause</button>
+        <button id="stopBtn" disabled>Stop</button>
+    </div>
 
-<script>
-function setupStopwatch() {
-    let startTime;
-    let elapsedTime = 0;
-    let timerInterval;
+    <script>
+        function setupStopwatch() {
+            let startTime
+            let elapsedTime = 0
+            let timerInterval
 
-    const timerDisplay = document.getElementById('timer');
-    const startBtn = document.getElementById('startBtn');
-    const pauseBtn = document.getElementById('pauseBtn');
-    const stopBtn = document.getElementById('stopBtn');
+            const timerDisplay = document.getElementById('timer')
+            const startBtn = document.getElementById('startBtn')
+            const pauseBtn = document.getElementById('pauseBtn')
+            const stopBtn = document.getElementById('stopBtn')
 
-    function formatTime(ms) {
-        const hours = Math.floor(ms / 3600000);
-        const minutes = Math.floor((ms % 3600000) / 60000);
-        const seconds = Math.floor((ms % 60000) / 1000);
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
+            function formatTime(time) {
+                let diffInHrs = time / 3600000
+                let hh = Math.floor(diffInHrs)
 
-    function updateTimer() {
-        const currentTime = new Date().getTime();
-        const elapsedTimeMs = currentTime - startTime + elapsedTime;
-        timerDisplay.textContent = formatTime(elapsedTimeMs);
-    }
+                let diffInMin = (diffInHrs - hh) * 60
+                let mm = Math.floor(diffInMin)
 
-    startBtn.addEventListener('click', () => {
-        startBtn.disabled = true;
-        pauseBtn.disabled = false;
-        stopBtn.disabled = false;
-        startTime = new Date().getTime() - elapsedTime;
-        timerInterval = setInterval(updateTimer, 1000);
-        updateTimer();
-    });
+                let diffInSec = (diffInMin - mm) * 60
+                let ss = Math.floor(diffInSec)
 
-    pauseBtn.addEventListener('click', () => {
-        if (pauseBtn.textContent === 'Pause') {
-            clearInterval(timerInterval);
-            elapsedTime = new Date().getTime() - startTime;
-            pauseBtn.textContent = 'Continue';
-        } else {
-            startTime = new Date().getTime() - elapsedTime;
-            timerInterval = setInterval(updateTimer, 1000);
-            pauseBtn.textContent = 'Pause';
+                let diffInMs = (diffInSec - ss) * 100
+                let ms = Math.floor(diffInMs)
+
+                let formattedHH = hh.toString().padStart(2, "0")
+                let formattedMM = mm.toString().padStart(2, "0")
+                let formattedSS = ss.toString().padStart(2, "0")
+                let formattedMS = ms.toString().padStart(2, "0")
+
+                return `${formattedHH}:${formattedMM}:${formattedSS}`
+            }
+
+            function updateTimer() {
+                const currentTime = new Date().getTime()
+                const elapsedTimeMs = currentTime - startTime
+                timerDisplay.textContent = formatTime(elapsedTimeMs)
+            }
+
+            startBtn.addEventListener('click', () => {
+                startBtn.disabled = true
+                pauseBtn.disabled = false
+                stopBtn.disabled = false
+                startTime = new Date().getTime() - elapsedTime
+                timerInterval = setInterval(updateTimer, 1000)
+                updateTimer()
+            })
+
+            pauseBtn.addEventListener('click', () => {
+                if (pauseBtn.textContent === 'Pause') {
+                    clearInterval(timerInterval)
+                    elapsedTime = new Date().getTime() - startTime
+                    pauseBtn.textContent = 'Continue'
+                } else {
+                    startTime = new Date().getTime() - elapsedTime
+                    timerInterval = setInterval(updateTimer, 1000)
+                    pauseBtn.textContent = 'Pause'
+                }
+            })
+
+            stopBtn.addEventListener('click', () => {
+                clearInterval(timerInterval)
+                elapsedTime = 0
+                timerDisplay.textContent = '00:00:00'
+                startBtn.disabled = false
+                pauseBtn.disabled = true
+                pauseBtn.textContent = 'Pause'
+                stopBtn.disabled = true
+            })
         }
-    });
 
-    stopBtn.addEventListener('click', () => {
-        clearInterval(timerInterval);
-        elapsedTime = 0;
-        timerDisplay.textContent = '00:00:00';
-        startBtn.disabled = false;
-        pauseBtn.disabled = true;
-        pauseBtn.textContent = 'Pause';
-        stopBtn.disabled = true;
-    });
-}
-
-
-setupStopwatch();
-</script>
+        setupStopwatch()
+    </script>
 
 </body>
+
 </html>
