@@ -3,6 +3,7 @@
     margin: 0 auto;
     max-width: 400px;
     padding: 20px;
+    background-color: #36a8f4;
   }
   
   .input-container {
@@ -29,16 +30,20 @@
   .task-list {
     list-style-type: none;
     padding: 0;
+    color: white;
   }
   
   .task-list li {
     margin-bottom: 10px;
     
 }
-  
+  .task-list li button{
+    align-content: end;
+  }
   .edit-btn {
     background-color: #4CAF50;
     color: white;
+    align-items: end;
     
   }
   
